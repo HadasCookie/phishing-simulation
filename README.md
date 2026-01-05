@@ -121,8 +121,7 @@ PORT=3000
 - Password hashing (bcrypt)
 - User-specific data isolation
 - Click tracking with unique tokens
-- Real-time status updates
-- Responsive React UI
-- Form validation
+- Auto-refresh status updates
+- Form validation (email, required fields)
 - MongoDB data persistence
 - CORS enabled for development
