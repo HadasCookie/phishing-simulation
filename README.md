@@ -44,6 +44,22 @@ cd frontend && npm start
 
 **4. Open http://localhost:3002**
 
+## Screenshots
+
+### Login Page
+
+![Login Page](./screenshots/01-login.png)
+
+### Dashboard - Create Phishing Simulation
+
+![Create Attempt](./screenshots/03-create-attempt.png)
+
+### Dashboard - Phishing Attempts Tracking
+
+![Dashboard with Data](./screenshots/04-dashboard-with-data.png)
+
+_Status updates automatically when victim clicks the tracking link_
+
 ## Architecture
 
 ### Server 1: Phishing Simulation Service (Port 3001)
