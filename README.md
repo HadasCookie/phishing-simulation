@@ -2,6 +2,48 @@
 
 A full-stack phishing simulation system built with NestJS microservices architecture, MongoDB, and React.
 
+## Quick Start
+
+### Prerequisites
+
+- Node.js 16+
+- MongoDB Atlas account
+
+### Setup:
+
+**1. Install dependencies:**
+
+```bash
+# Server 1 (Phishing Simulation - Port 3001)
+cd phishing-simulation-server && npm install
+
+# Server 2 (Management - Port 3000)
+cd ../management-server && npm install
+
+# Frontend (Port 3002)
+cd ../frontend && npm install
+```
+
+**2. Configure MongoDB:**
+
+- Update connection strings in both servers `src/app.module.ts`
+- Use your MongoDB Atlas connection string
+
+**3. Start all services:**
+
+```bash
+# Terminal 1
+cd phishing-simulation-server && npm run start:dev
+
+# Terminal 2
+cd management-server && npm run start:dev
+
+# Terminal 3
+cd frontend && npm start
+```
+
+**4. Open http://localhost:3002**
+
 ## Architecture
 
 ### Server 1: Phishing Simulation Service (Port 3001)
@@ -39,82 +81,23 @@ A full-stack phishing simulation system built with NestJS microservices architec
 - TypeScript
 - Fetch API
 
-## Setup Instructions
+## Configuration Notes
 
-### Prerequisites
+### Database Connection
 
-- Node.js (v16+)
-- MongoDB Atlas account (or local MongoDB)
-
-### 1. Clone Repository
-
-```bash
-git clone <your-repo-url>
-cd cymulate-phishing-simulation
-```
-
-### 2. Install Dependencies
-
-**Server 1 (Phishing Simulation):**
-
-```bash
-cd phishing-simulation-server
-npm install
-```
-
-**Server 2 (Management):**
-
-```bash
-cd management-server
-npm install
-```
-
-**Frontend:**
-
-```bash
-cd frontend
-npm install
-```
-
-### 3. Configure MongoDB
-
-Update MongoDB connection strings in:
+MongoDB Atlas connection strings are currently hardcoded in:
 
 - `phishing-simulation-server/src/app.module.ts`
 - `management-server/src/app.module.ts`
 
-Replace with your MongoDB Atlas connection string.
+**For production**, these should be moved to `.env` files:
 
-### 4. Start Services
-
-**Terminal 1 - Server 1:**
-
-```bash
-cd phishing-simulation-server
-npm run start:dev
+```env
+# .env
+MONGODB_URI=mongodb+srv://user:pass@cluster.mongodb.net/dbname
+JWT_SECRET=your-secret-key
+PORT=3000
 ```
-
-**Terminal 2 - Server 2:**
-
-```bash
-cd management-server
-npm run start:dev
-```
-
-**Terminal 3 - Frontend:**
-
-```bash
-cd frontend
-npm start
-```
-
-## Usage
-
-1. **Register/Login:** Navigate to http://localhost:3002
-2. **Create Phishing Attempt:** Fill in target email, subject, and content
-3. **Get Tracking Link:** Copy the tracking link from the success message
-4. **Simulate Click:** Open the tracking link in browser
-5. **View Status:** Watch the dashboard update to "CLICKED"
 
 ## API Endpoints
 
@@ -133,27 +116,13 @@ npm start
 
 ## Features
 
-✅ Microservices architecture with inter-service communication
-✅ JWT authentication and authorization
-✅ User-specific data isolation
-✅ Click tracking with unique tokens
-✅ Real-time status updates
-✅ Responsive React UI
-✅ Form validation
-✅ MongoDB data persistence
-
-## Security Features
-
+- Microservices architecture with inter-service communication
+- JWT authentication and authorization
 - Password hashing (bcrypt)
-- JWT token authentication
-- User-specific data access
+- User-specific data isolation
+- Click tracking with unique tokens
+- Real-time status updates
+- Responsive React UI
+- Form validation
+- MongoDB data persistence
 - CORS enabled for development
-
-## Future Enhancements
-
-- Actual email sending via SMTP
-- Email templates library
-- Campaign scheduling
-- Analytics dashboard
-- User awareness training modules
-- Docker containerization
