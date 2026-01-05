@@ -13,9 +13,7 @@ interface PhishingAttempt {
 }
 
 function App() {
-  const [token, setToken] = useState<string>(
-    localStorage.getItem("token") || ""
-  );
+  const [token, setToken] = useState<string>("");
   const [isLogin, setIsLogin] = useState<boolean>(true);
 
   // Auth form
@@ -29,6 +27,12 @@ function App() {
 
   // Attempts list
   const [attempts, setAttempts] = useState<PhishingAttempt[]>([]);
+
+  // Clear token on app start to always show login page
+  useEffect(() => {
+    localStorage.removeItem("token");
+    setToken("");
+  }, []);
 
   const fetchAttempts = useCallback(async () => {
     try {
@@ -422,6 +426,16 @@ function App() {
                       padding: "12px",
                       textAlign: "left",
                       borderBottom: "2px solid #dee2e6",
+                      minWidth: "200px",
+                    }}
+                  >
+                    Actions
+                  </th>
+                  <th
+                    style={{
+                      padding: "12px",
+                      textAlign: "left",
+                      borderBottom: "2px solid #dee2e6",
                     }}
                   >
                     Created
@@ -429,37 +443,129 @@ function App() {
                 </tr>
               </thead>
               <tbody>
-                {attempts.map((attempt) => (
-                  <tr
-                    key={attempt._id}
-                    style={{ borderBottom: "1px solid #dee2e6" }}
-                  >
-                    <td style={{ padding: "12px" }}>{attempt.targetEmail}</td>
-                    <td style={{ padding: "12px" }}>{attempt.emailSubject}</td>
-                    <td style={{ padding: "12px" }}>
-                      <span
-                        style={{
-                          padding: "4px 12px",
-                          borderRadius: "12px",
-                          fontSize: "12px",
-                          fontWeight: "bold",
-                          backgroundColor:
-                            attempt.status === "CLICKED"
-                              ? "#dc3545"
-                              : attempt.status === "SENT"
-                              ? "#28a745"
-                              : "#ffc107",
-                          color: "white",
-                        }}
-                      >
-                        {attempt.status}
-                      </span>
-                    </td>
-                    <td style={{ padding: "12px" }}>
-                      {new Date(attempt.createdAt).toLocaleString()}
+                {attempts.map((attempt) => {
+                  const trackingLink = `http://localhost:3001/phishing/track/${attempt.trackingToken}`;
+
+                  const handleCopyLink = () => {
+                    navigator.clipboard.writeText(trackingLink);
+                    alert("📋 Tracking link copied to clipboard!");
+                  };
+
+                  const handleTestClick = () => {
+                    window.open(trackingLink, "_blank");
+                    // Auto-refresh after 2 seconds to show updated status
+                    setTimeout(() => {
+                      fetchAttempts();
+                    }, 2000);
+                  };
+
+                  return (
+                    <tr
+                      key={attempt._id}
+                      style={{ borderBottom: "1px solid #dee2e6" }}
+                    >
+                      <td style={{ padding: "12px" }}>{attempt.targetEmail}</td>
+                      <td style={{ padding: "12px" }}>
+                        {attempt.emailSubject}
+                      </td>
+                      <td style={{ padding: "12px" }}>
+                        <span
+                          style={{
+                            padding: "4px 12px",
+                            borderRadius: "12px",
+                            fontSize: "12px",
+                            fontWeight: "bold",
+                            backgroundColor:
+                              attempt.status === "CLICKED"
+                                ? "#dc3545"
+                                : attempt.status === "SENT"
+                                ? "#28a745"
+                                : "#ffc107",
+                            color: "white",
+                          }}
+                        >
+                          {attempt.status}
+                        </span>
+                      </td>
+                      <td style={{ padding: "12px" }}>
+                        {attempt.status === "SENT" ? (
+                          <div
+                            style={{
+                              display: "flex",
+                              gap: "8px",
+                              flexWrap: "wrap",
+                            }}
+                          >
+                            <button
+                              onClick={handleCopyLink}
+                              style={{
+                                padding: "6px 12px",
+                                backgroundColor: "#6c757d",
+                                color: "white",
+                                border: "none",
+                                borderRadius: "4px",
+                                fontSize: "12px",
+                                cursor: "pointer",
+                                fontWeight: "bold",
+                              }}
+                            >
+                              📋 Copy Link
+                            </button>
+                            <button
+                              onClick={handleTestClick}
+                              style={{
+                                padding: "6px 12px",
+                                backgroundColor: "#ffc107",
+                                color: "#000",
+                                border: "none",
+                                borderRadius: "4px",
+                                fontSize: "12px",
+                                cursor: "pointer",
+                                fontWeight: "bold",
+                              }}
+                            >
+                              🔗 Test Click
+                            </button>
+                          </div>
+                        ) : (
+                          <span
+                            style={{
+                              color: "#28a745",
+                              fontSize: "13px",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            ✓ Clicked{" "}
+                            {attempt.clickedAt
+                              ? `at ${new Date(
+                                  attempt.clickedAt
+                                ).toLocaleTimeString()}`
+                              : ""}
+                          </span>
+                        )}
+                      </td>
+                      <td style={{ padding: "12px" }}>
+                        {new Date(attempt.createdAt).toLocaleString()}
+                      </td>
+                    </tr>
+                  );
+                })}
+
+                {attempts.length === 0 && (
+                  <tr>
+                    <td
+                      colSpan={5}
+                      style={{
+                        padding: "40px",
+                        textAlign: "center",
+                        color: "#6c757d",
+                      }}
+                    >
+                      No phishing attempts yet. Create your first simulation
+                      above!
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
