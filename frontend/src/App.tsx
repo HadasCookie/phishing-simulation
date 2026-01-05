@@ -170,6 +170,8 @@ function App() {
     setToken("");
     localStorage.removeItem("token");
     setAttempts([]);
+    setUsername("");
+    setPassword("");
   };
 
   // Login/Register Page
